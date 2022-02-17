@@ -1,9 +1,7 @@
 class Post {
   constructor () {
-      // TODO inicializar firestore y settings
+    // TODO inicializar firestore y settings
     this.db = firebase.firestore()
-    const settings = { timestampsInSnapshots: true }
-    this.db.settings(settings)
   }
 
   crearPost (uid, emailUser, titulo, descripcion, imagenLink, videoLink) {
@@ -25,46 +23,54 @@ class Post {
   }
 
   consultarTodosPost () {
-    this.db.collection("posts").onSnapshot(querySnapshot => {
-        $("#posts").empty()
-        if(querySnapshot.empty){
-            $("#posts").append(this.obtenerTemplatePostVacio())
-        } else {
-            querySnapshot.forEach(post => {
-                let postHtml = this.obtenerPostTemplate(
-                    post.data().emailUser,
-                    post.data().titulo,
-                    post.data().descripcion,
-                    post.data().videoLink,
-                    post.data().imagenLink,
-                    Utilidad.obtenerFecha(post.data().fecha.toDate())
-                )
-                $("#posts").append(postHtml)
-            })
-        }
+    this.
+        db.
+        collection("posts")
+        .orderBy("fecha", "asc")
+        .orderBy("titulo", "asc")
+        .onSnapshot(querySnapshot => {
+            $("#posts").empty()
+            if(querySnapshot.empty){
+                $("#posts").append(this.obtenerTemplatePostVacio())
+            } else {
+                querySnapshot.forEach(post => {
+                    let postHtml = this.obtenerPostTemplate(
+                        post.data()?.emailUser,
+                        post.data()?.titulo,
+                        post.data()?.descripcion,
+                        post.data()?.videoLink,
+                        post.data()?.imagenLink,
+                        Utilidad.obtenerFecha(post.data()?.fecha?.toDate())
+                    )
+                    $("#posts").append(postHtml)
+                })
+            }
     })
   }
 
   consultarPostxUsuario (emailUser) {
-    this.db.collection("posts")
-    .where("emailUser", "==", emailUser)
-    .onSnapshot(querySnapshot => {
-        $("#posts").empty()
-        if(querySnapshot.empty){
-            $("#posts").append(this.obtenerTemplatePostVacio())
-        } else {
-            querySnapshot.forEach(post => {
-                let postHtml = this.obtenerPostTemplate(
-                    post.data().emailUser,
-                    post.data().titulo,
-                    post.data().descripcion,
-                    post.data().videoLink,
-                    post.data().imagenLink,
-                    Utilidad.obtenerFecha(post.data().fecha.toDate())
-                )
-                $("#posts").append(postHtml)
-            })
-        }
+    this
+        .db.
+        collection("posts")
+        .orderBy("fecha", "asc")
+        .where("emailUser", "==", emailUser)
+        .onSnapshot(querySnapshot => {
+            $("#posts").empty()
+            if(querySnapshot.empty){
+                $("#posts").append(this.obtenerTemplatePostVacio())
+            } else {
+                querySnapshot.forEach(post => {
+                    let postHtml = this.obtenerPostTemplate(
+                        post.data()?.emailUser,
+                        post.data()?.titulo,
+                        post.data()?.descripcion,
+                        post.data()?.videoLink,
+                        post.data()?.imagenLink,
+                        Utilidad.obtenerFecha(post.data()?.fecha?.toDate())
+                    )
+                    $("#posts").append(postHtml)
+                })
+            }
     })
   }
 
