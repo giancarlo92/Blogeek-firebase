@@ -1,81 +1,107 @@
 class Post {
-  constructor () {
-    // TODO inicializar firestore y settings
-    this.db = firebase.firestore()
-  }
+    constructor() {
+        // TODO inicializar firestore y settings
+        this.db = firebase.firestore()
+    }
 
-  crearPost (uid, emailUser, titulo, descripcion, imagenLink, videoLink) {
-    return this.db.collection("posts").add({
-        uid,
-        emailUser,
-        titulo,
-        descripcion,
-        imagenLink,
-        videoLink,
-        fecha: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(refDoc => {
-        console.log(`Id del post => ${refDoc.id}`);
-    })
-    .catch(error => {
-        console.error(`error creando el post ${error.message}`);
-    })
-  }
+    crearPost(uid, emailUser, titulo, descripcion, imagenLink, videoLink) {
+        return this.db.collection("posts").add({
+            uid,
+            emailUser,
+            titulo,
+            descripcion,
+            imagenLink,
+            videoLink,
+            fecha: firebase.firestore.FieldValue.serverTimestamp()
+        })
+            .then(refDoc => {
+                console.log(`Id del post => ${refDoc.id}`);
+            })
+            .catch(error => {
+                console.error(`error creando el post ${error.message}`);
+            })
+    }
 
-  consultarTodosPost () {
-    this.
-        db.
-        collection("posts")
-        .orderBy("fecha", "asc")
-        .orderBy("titulo", "asc")
-        .onSnapshot(querySnapshot => {
-            $("#posts").empty()
-            if(querySnapshot.empty){
-                $("#posts").append(this.obtenerTemplatePostVacio())
-            } else {
-                querySnapshot.forEach(post => {
-                    let postHtml = this.obtenerPostTemplate(
-                        post.data()?.emailUser,
-                        post.data()?.titulo,
-                        post.data()?.descripcion,
-                        post.data()?.videoLink,
-                        post.data()?.imagenLink,
-                        Utilidad.obtenerFecha(post.data()?.fecha?.toDate())
-                    )
-                    $("#posts").append(postHtml)
+    consultarTodosPost() {
+        this.
+            db.
+            collection("posts")
+            .orderBy("fecha", "asc")
+            .orderBy("titulo", "asc")
+            .onSnapshot(querySnapshot => {
+                $("#posts").empty()
+                if (querySnapshot.empty) {
+                    $("#posts").append(this.obtenerTemplatePostVacio())
+                } else {
+                    querySnapshot.forEach(post => {
+                        let postHtml = this.obtenerPostTemplate(
+                            post.data()?.emailUser,
+                            post.data()?.titulo,
+                            post.data()?.descripcion,
+                            post.data()?.videoLink,
+                            post.data()?.imagenLink,
+                            Utilidad.obtenerFecha(post.data()?.fecha?.toDate())
+                        )
+                        $("#posts").append(postHtml)
+                    })
+                }
+            })
+    }
+
+    consultarPostxUsuario(emailUser) {
+        this
+            .db.
+            collection("posts")
+            .orderBy("fecha", "asc")
+            .where("emailUser", "==", emailUser)
+            .onSnapshot(querySnapshot => {
+                $("#posts").empty()
+                if (querySnapshot.empty) {
+                    $("#posts").append(this.obtenerTemplatePostVacio())
+                } else {
+                    querySnapshot.forEach(post => {
+                        let postHtml = this.obtenerPostTemplate(
+                            post.data()?.emailUser,
+                            post.data()?.titulo,
+                            post.data()?.descripcion,
+                            post.data()?.videoLink,
+                            post.data()?.imagenLink,
+                            Utilidad.obtenerFecha(post.data()?.fecha?.toDate())
+                        )
+                        $("#posts").append(postHtml)
+                    })
+                }
+            })
+    }
+
+    subirImagenPost(file, uid) {
+        const storage = firebase.storage()
+        const refStorage = storage.ref(`imagenesPost/${uid}/${file?.name}`)
+        const task = refStorage.put(file)
+
+        // tarea que se ejecuta cuando se carga el archivo
+        task.on('state_changed', snapshot => {
+            const porcentaje = snapshot.bytesTransferred / snapshot.totalBytes * 100
+            // Le informa al usuario cuantos bytes a subido en porcentaje
+            $('.determinate').attr("style", `width: ${porcentaje}%`)
+        },
+        error => {
+            Materialize.toast(`Error subiendo archivo => ${error.message}`, 4000)
+        },
+        // funcion una vez se complete la subida del archivo
+        () => {
+            task.snapshot.ref.getDownloadURL()
+                .then(url => {
+                    console.log(url)
+                    sessionStorage.setItem("imgNewPost", url)
+                }).catch( error => {
+                    Materialize.toast(`Error obteniendo la URL => ${error.message}`, 4000)
                 })
-            }
-    })
-  }
+        })
+    }
 
-  consultarPostxUsuario (emailUser) {
-    this
-        .db.
-        collection("posts")
-        .orderBy("fecha", "asc")
-        .where("emailUser", "==", emailUser)
-        .onSnapshot(querySnapshot => {
-            $("#posts").empty()
-            if(querySnapshot.empty){
-                $("#posts").append(this.obtenerTemplatePostVacio())
-            } else {
-                querySnapshot.forEach(post => {
-                    let postHtml = this.obtenerPostTemplate(
-                        post.data()?.emailUser,
-                        post.data()?.titulo,
-                        post.data()?.descripcion,
-                        post.data()?.videoLink,
-                        post.data()?.imagenLink,
-                        Utilidad.obtenerFecha(post.data()?.fecha?.toDate())
-                    )
-                    $("#posts").append(postHtml)
-                })
-            }
-    })
-  }
-
-  obtenerTemplatePostVacio () {
-    return `<article class="post">
+    obtenerTemplatePostVacio() {
+        return `<article class="post">
       <div class="post-titulo">
           <h5>Crea el primer Post a la comunidad</h5>
       </div>
@@ -100,18 +126,18 @@ class Post {
       <div class="post-footer container">         
       </div>
   </article>`
-  }
+    }
 
-  obtenerPostTemplate (
-    autor,
-    titulo,
-    descripcion,
-    videoLink,
-    imagenLink,
-    fecha
-  ) {
-    if (imagenLink) {
-      return `<article class="post">
+    obtenerPostTemplate(
+        autor,
+        titulo,
+        descripcion,
+        videoLink,
+        imagenLink,
+        fecha
+    ) {
+        if (imagenLink) {
+            return `<article class="post">
             <div class="post-titulo">
                 <h5>${titulo}</h5>
             </div>
@@ -143,9 +169,9 @@ class Post {
                 </div>
             </div>
         </article>`
-    }
+        }
 
-    return `<article class="post">
+        return `<article class="post">
                 <div class="post-titulo">
                     <h5>${titulo}</h5>
                 </div>
@@ -178,5 +204,5 @@ class Post {
                     </div>
                 </div>
             </article>`
-  }
+    }
 }
