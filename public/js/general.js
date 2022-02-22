@@ -1,15 +1,27 @@
 $(() => {
   $('.tooltipped').tooltip({ delay: 50 })
   $('.modal').modal()
+  
+    // Init Firebase nuevamente
+    firebase.initializeApp(varConfig);
 
   // TODO: Adicionar el service worker
-
-  // Init Firebase nuevamente
-  firebase.initializeApp(varConfig);
-
+  const messaging = firebase.messaging();
   // TODO: Registrar LLave publica de messaging
 
   // TODO: Solicitar permisos para las notificaciones
+  messaging.getToken({
+    vapidKey: 'BM5SKoyzC-IYR8GJJioMN9vx2iurOlbYCDj-Z6VZC0Qn26BN164_awqx68yMM6Df0AnEoo-eSkIJuu9NjTKwh3E'
+  }).then((currentToken) => {
+    if (currentToken) {
+      console.log(currentToken);
+    } else {
+      // Show permission request.
+      console.log('No registration token available. Request permission to generate one.');
+    }
+  }).catch((err) => {
+    console.log('An error occurred while retrieving token. ', err);
+  });
 
   // TODO: Recibir las notificaciones cuando el usuario esta foreground
 

@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "blogeek-gzl"
-  }
+    "default": "blogeek-gzl",
+    "blogeek": "blogeek-gzl"
+  },
+  "targets": {}
 }
