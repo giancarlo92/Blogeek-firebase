@@ -98,11 +98,10 @@ class PostDAO {
     }
   
     // Consulta simple, no es realtime, de este se obtiene el titulo
-    querySingle (id) {
+    async querySingle (id) {
       let ref = this.db.collection('posts').doc(id)
-      ref.get().then(respDoc => {
-        console.log(`querySingle postID ${id} => ${respDoc.data().titulo}`)
-      })
+      const respDoc = await ref.get()
+      return respDoc
     }
   
     // Consulta utilizando un filtro

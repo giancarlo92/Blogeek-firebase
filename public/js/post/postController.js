@@ -4,6 +4,7 @@ $(() => {
     $('#descripcionNewPost').val('')
     $('#linkVideoNewPost').val('')
     $('#btnUploadFile').val('')
+    $("#imagen-subida").attr("src", "")
     $('.determinate').attr('style', `width: 0%`)
     sessionStorage.setItem('imgNewPost', null)
 
@@ -68,3 +69,24 @@ $(() => {
     post.subirImagenPost(file, user?.uid)
   })
 })
+
+async function editPost(id){
+
+  const postDao = new PostDAO()
+  const resp = await postDao.querySingle(id)
+  
+  $('#tituloNewPost').val(resp.data()?.titulo)
+  $('#descripcionNewPost').val(resp.data()?.descripcion)
+  $('#linkVideoNewPost').val(resp.data()?.videoLink)
+  $('.determinate').attr("style", `width: 100%`)
+  $("#imagen-subida").attr("style", `display: block;`)
+  $("#imagen-subida").attr("src", resp.data()?.imagenLink)
+  $("#btnRegistroPost").text("Editar Post")
+
+  $('#modalPost').modal('open')
+
+  $('#tituloNewPost').focus()
+  $('#descripcionNewPost').focus()
+  $('#linkVideoNewPost').focus()
+
+}
