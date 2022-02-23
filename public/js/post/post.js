@@ -143,7 +143,7 @@ class Post {
         if(id != null){
             botonesDeAccion = /*html*/`<div class="col m6 right-align" style="padding-right: 15px;">
                     <a class="btn-floating waves-effect waves-light btnPpal" onclick="editPost('${id}')"><i class="material-icons">edit</i></a>
-                    <a class="btn-floating waves-effect waves-light red"><i class="material-icons">delete</i></a>
+                    <a class="btn-floating waves-effect waves-light red" onclick="deletePost('${id}')"><i class="material-icons">delete</i></a>
                 </div>`
         }
 

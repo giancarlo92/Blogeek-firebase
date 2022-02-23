@@ -68,6 +68,19 @@ $(() => {
     const post = new Post()
     post.subirImagenPost(file, user?.uid)
   })
+
+  $('#eliminar-post-no').click(() => {
+    $('#modalEliminarPost').modal('close')
+  })
+
+  $('#eliminar-post-si').click(() => {
+    const idPost = $("#idPost").val()
+    const postDao = new PostDAO()
+    postDao.delete(idPost)
+
+    $('#modalEliminarPost').modal('close')
+    Materialize.toast(`El registro fue eliminado`, 4000)
+  })
 })
 
 async function editPost(id){
@@ -89,4 +102,9 @@ async function editPost(id){
   $('#descripcionNewPost').focus()
   $('#linkVideoNewPost').focus()
 
+}
+
+function deletePost(id){
+  $("#idPost").val(id)
+  $('#modalEliminarPost').modal('open')
 }
