@@ -81,6 +81,17 @@ $(() => {
     $('#modalEliminarPost').modal('close')
     Materialize.toast(`El registro fue eliminado`, 4000)
   })
+
+  $("#texto-busqueda").on('keyup', v => {
+    const busqueda = $("#texto-busqueda").val()
+    if (busqueda.length > 2){
+      const post = new Post()
+      post.obtenerDesplegableBusqueda(busqueda);
+    } else {
+      $("#data-encontrada").empty()
+    }
+  })
+  
 })
 
 async function editPost(id){
@@ -107,4 +118,13 @@ async function editPost(id){
 function deletePost(id){
   $("#idPost").val(id)
   $('#modalEliminarPost').modal('open')
+}
+
+async function seleccionado(id){
+    $("#texto-busqueda").val('')
+    $("#data-encontrada").empty()
+    const postDao = new PostDAO()
+    const resp = await postDao.querySingle(id)
+    const post = new Post()
+    post.colocarPostSeleccionado(resp)
 }

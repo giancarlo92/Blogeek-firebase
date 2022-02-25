@@ -76,6 +76,20 @@ class Post {
             })
     }
 
+    colocarPostSeleccionado(post){
+        $("#posts").empty()
+        let postHtml = this.obtenerPostTemplate(
+            post.data()?.emailUser,
+            post.data()?.titulo,
+            post.data()?.descripcion,
+            post.data()?.videoLink,
+            post.data()?.imagenLink,
+            Utilidad.obtenerFecha(post.data()?.fecha?.toDate()),
+            post?.id
+        )
+        $("#posts").append(postHtml)
+    }
+
     subirImagenPost(file, uid) {
         const storage = firebase.storage()
         const refStorage = storage.ref(`imagenesPost/${uid}/${file?.name}`)
@@ -217,5 +231,23 @@ class Post {
                         </div>
                     </div>
                 </article>`
+    }
+
+    obtenerDesplegableBusqueda(busqueda){
+        this.
+            db.
+            collection("posts")
+            .where("titulo", ">=", busqueda)
+            .where('titulo', '<=', busqueda + '\uf8ff')
+            .limit(3)
+            .onSnapshot(querySnapshot => {
+                $("#data-encontrada").empty()
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach(post => {
+                        let postHtml = `<li onclick="seleccionado('${post?.id}')">${post.data()?.titulo}</li>`
+                        $("#data-encontrada").append(postHtml)
+                    })
+                }
+            })
     }
 }
