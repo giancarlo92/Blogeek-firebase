@@ -22,6 +22,23 @@ class Post {
             })
     }
 
+    editarPost(id, uid, emailUser, titulo, descripcion, imagenLink, videoLink){
+        let refUser = this.db.collection('posts').doc(id)
+  
+        return refUser.update({
+            uid,
+            emailUser,
+            titulo,
+            descripcion,
+            imagenLink,
+            videoLink,
+            fecha: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .catch(error => {
+            console.error(`error editar el post ${error.message}`);
+        })
+    }
+
     consultarTodosPost() {
         this.
             db.
@@ -110,6 +127,8 @@ class Post {
                 .then(url => {
                     console.log(url)
                     sessionStorage.setItem("imgNewPost", url)
+                    $("#imagen-subida").attr("style", `display: block;`)
+                    $("#imagen-subida").attr("src", url)
                 }).catch( error => {
                     Materialize.toast(`Error obteniendo la URL => ${error.message}`, 4000)
                 })

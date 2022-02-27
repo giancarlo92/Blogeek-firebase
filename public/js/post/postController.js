@@ -1,9 +1,11 @@
 $(() => {
   $('#btnModalPost').click(() => {
+    $('#idEdit').val('')
     $('#tituloNewPost').val('')
     $('#descripcionNewPost').val('')
     $('#linkVideoNewPost').val('')
     $('#btnUploadFile').val('')
+    $("#imagen-subida").attr("style", `display: none;`)
     $("#imagen-subida").attr("src", "")
     $('.determinate').attr('style', `width: 0%`)
     sessionStorage.setItem('imgNewPost', null)
@@ -11,7 +13,7 @@ $(() => {
     // TODO: Validar que el usuario esta autenticado
 
     // Materialize.toast(`Para crear el post debes estar autenticado`, 4000)
-
+    $("#btnRegistroPost").text("Crear Post")
     $('#modalPost').modal('open')
   })
 
@@ -32,22 +34,44 @@ $(() => {
       ? null
       : sessionStorage.getItem('imgNewPost')
 
-    post
-      .crearPost(
-        user.uid,
-        user.email,
-        titulo,
-        descripcion,
-        imagenLink,
-        videoLink
-      )
-      .then(resp => {
-        Materialize.toast(`Post creado correctamente`, 4000)
-        $('.modal').modal('close')
-      })
-      .catch(err => {
-        Materialize.toast(`Error => ${err}`, 4000)
-      })
+    const idEdit = $("#idEdit").val()
+    if(idEdit == ''){
+      post
+        .crearPost(
+          user.uid,
+          user.email,
+          titulo,
+          descripcion,
+          imagenLink,
+          videoLink
+        )
+        .then(resp => {
+          Materialize.toast(`Post creado correctamente`, 4000)
+          $('.modal').modal('close')
+        })
+        .catch(err => {
+          Materialize.toast(`Error => ${err}`, 4000)
+        })
+    } else {
+      post
+        .editarPost(
+          idEdit,
+          user.uid,
+          user.email,
+          titulo,
+          descripcion,
+          imagenLink,
+          videoLink
+        )
+        .then(resp => {
+          Materialize.toast(`Post creado correctamente`, 4000)
+          $('.modal').modal('close')
+        })
+        .catch(err => {
+          Materialize.toast(`Error => ${err}`, 4000)
+        })
+    }
+    
   })
 
   $('#btnModalAccionesFirestore').click(() => {
@@ -99,14 +123,16 @@ async function editPost(id){
   const postDao = new PostDAO()
   const resp = await postDao.querySingle(id)
   
+  $('#idEdit').val(id)
   $('#tituloNewPost').val(resp.data()?.titulo)
   $('#descripcionNewPost').val(resp.data()?.descripcion)
   $('#linkVideoNewPost').val(resp.data()?.videoLink)
   $('.determinate').attr("style", `width: 100%`)
   $("#imagen-subida").attr("style", `display: block;`)
   $("#imagen-subida").attr("src", resp.data()?.imagenLink)
-  $("#btnRegistroPost").text("Editar Post")
+  sessionStorage.setItem("imgNewPost", resp.data()?.imagenLink)
 
+  $("#btnRegistroPost").text("Editar Post")
   $('#modalPost').modal('open')
 
   $('#tituloNewPost').focus()
