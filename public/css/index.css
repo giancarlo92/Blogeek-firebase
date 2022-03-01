@@ -506,3 +506,7 @@ label
   background-color: #219cca !important;
   color: white;
 }
+
+.post-calificacion a {
+  cursor: pointer !important;
+}

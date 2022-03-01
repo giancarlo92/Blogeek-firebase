@@ -43,6 +43,7 @@ $(() => {
     } else {
       $("#btnInicioSesion").text("Iniciar sesión")
       $('#avatar').attr('src', 'imagenes/usuario.png')
+      $("#btnTodoPost").click()
     }
   })
 
@@ -55,6 +56,7 @@ $(() => {
         .then(()=> {
           $('#avatar').attr('src', 'imagenes/usuario.png')
           Materialize.toast(`SignOut Correcto`, 4000)
+          $("#btnTodoPost").click()
         })
         .catch(error => {
           Materialize.toast(`Error al realizar SingOut ${error.message}`, 4000)

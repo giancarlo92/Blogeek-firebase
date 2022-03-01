@@ -154,3 +154,21 @@ async function seleccionado(id){
     const post = new Post()
     post.colocarPostSeleccionado(resp)
 }
+
+function colocarEstrellas(numeroEstrellas, id){
+  const user = firebase.auth().currentUser
+  if(!user){
+    Materialize.toast(`Debes estar autenticado para votar`, 4000)
+    return
+  }
+
+  //guardar calificacion
+  const post = new Post()
+  post.guardarCalificacion(numeroEstrellas, id)
+      .then(resp => {
+        Materialize.toast(`Se ha calificado el post correctamente`, 4000)
+      })
+      .catch(err => {
+        Materialize.toast(`Error => ${err}`, 4000)
+      })
+}
